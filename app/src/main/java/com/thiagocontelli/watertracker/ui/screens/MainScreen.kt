@@ -27,18 +27,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.thiagocontelli.watertracker.R
 import com.thiagocontelli.watertracker.ui.components.CircularWaterProgress
+import com.thiagocontelli.watertracker.ui.viewmodels.MainViewModel
+import java.time.format.DateTimeFormatter
 
 data class Option(
     val id: Int,
@@ -46,36 +46,31 @@ data class Option(
     val contentDescription: String,
     val recipient: String,
     val amount: Int,
-    var selected: Boolean
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
-    var showModal by remember {
-        mutableStateOf(false)
-    }
+fun MainScreen(vm: MainViewModel = hiltViewModel()) {
+    val state = vm.state.collectAsState().value
 
     val bottomSheetState = rememberModalBottomSheetState()
 
-    var options by remember {
-        mutableStateOf(
-            listOf(
-                Option(1, R.drawable.glass_cup, "Glass of water", "Glass", 200, true),
-                Option(2, R.drawable.bottle, "Bottle of water", "Bottle", 500, false),
-                Option(3, R.drawable.gallon, "Gallon of water", "Gallon", 1000, false),
-            )
-        )
-    }
+    val options = listOf(
+        Option(1, R.drawable.glass_cup, "Glass of water", "Glass", 200),
+        Option(2, R.drawable.bottle, "Bottle of water", "Bottle", 500),
+        Option(3, R.drawable.gallon, "Gallon of water", "Gallon", 1000),
+    )
+
+    val dateFormatter = DateTimeFormatter.ofPattern("hh:mm a")
 
     Scaffold(topBar = {
         TopAppBar(title = {}, actions = {
-            TextButton(onClick = { showModal = true }) {
+            TextButton(onClick = { vm.toggleModal() }) {
                 Text(text = "New register")
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add new register",
+                    contentDescription = "Add new record",
                     modifier = Modifier.size(ButtonDefaults.IconSize)
                 )
             }
@@ -83,7 +78,9 @@ fun MainScreen() {
     }) { paddingValues ->
         Column(Modifier.padding(paddingValues)) {
             Column(
-                Modifier.padding(16.dp),
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(64.dp)
             ) {
@@ -91,13 +88,16 @@ fun MainScreen() {
 
                 Column {
                     Text(
-                        text = "Statistics",
+                        text = "Today's Statistics",
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .align(Alignment.Start)
+                            .fillMaxWidth()
                     )
 
                     LazyColumn {
-                        items(3) {
+                        items(state.records) { record ->
                             ElevatedCard(
                                 Modifier
                                     .fillMaxWidth()
@@ -115,12 +115,13 @@ fun MainScreen() {
                                     )
 
                                     Text(
-                                        text = "Drank 200ml of water",
+                                        text = "Drank ${getFormattedAmount(record.amount)} of water",
                                         style = MaterialTheme.typography.titleMedium
                                     )
 
                                     Text(
-                                        text = "8pm", style = MaterialTheme.typography.labelLarge
+                                        text = dateFormatter.format(record.createdAt),
+                                        style = MaterialTheme.typography.labelLarge
                                     )
                                 }
                             }
@@ -132,9 +133,9 @@ fun MainScreen() {
 
     }
 
-    if (showModal) {
+    if (state.showModal) {
         ModalBottomSheet(
-            onDismissRequest = { showModal = false },
+            onDismissRequest = { vm.toggleModal() },
             sheetState = bottomSheetState,
         ) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(32.dp)) {
@@ -144,40 +145,46 @@ fun MainScreen() {
                     items(options) { option ->
                         Column(horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
-                                .clickable {
-                                    options = options.map {
-                                        if (it.id == option.id) it.copy(selected = true) else it.copy(
-                                            selected = false
-                                        )
-                                    }
-                                }
+                                .clickable { vm.onAmountChange(option.amount) }
                                 .padding(8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Icon(
                                 painterResource(id = option.painterResourceId),
                                 contentDescription = option.contentDescription,
-                                tint = if (option.selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                                tint = if (option.amount == state.selectedAmount) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
                             )
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = option.recipient,
-                                    color = if (option.selected) MaterialTheme.colorScheme.primary else Color.Unspecified,
+                                    color = if (option.amount == state.selectedAmount) MaterialTheme.colorScheme.primary else Color.Unspecified,
                                 )
                                 Text(
-                                    text = "${option.amount}ml",
-                                    color = if (option.selected) MaterialTheme.colorScheme.primary else Color.Unspecified,
+                                    text = getFormattedAmount(option.amount),
+                                    color = if (option.amount == state.selectedAmount) MaterialTheme.colorScheme.primary else Color.Unspecified,
                                 )
                             }
                         }
                     }
                 }
 
-                Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Add")
+                Button(
+                    onClick = { vm.addRecord() },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !state.isLoading
+                ) {
+                    Text(text = if (state.isLoading) "Adding..." else "Add")
                 }
             }
         }
     }
+}
+
+fun getFormattedAmount(amount: Int): String {
+    if (amount >= 1000) {
+        return "${amount / 1000}L"
+    }
+
+    return "${amount}ml"
 }
 
 @Composable
