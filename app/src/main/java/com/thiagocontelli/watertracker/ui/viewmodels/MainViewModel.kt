@@ -1,5 +1,6 @@
 package com.thiagocontelli.watertracker.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thiagocontelli.watertracker.data.AppDatabase
@@ -16,6 +17,7 @@ data class State(
     val isLoading: Boolean = false,
     val showModal: Boolean = false,
     val records: List<Record> = emptyList(),
+    val todaysAmount: Int = 0
 )
 
 @HiltViewModel
@@ -48,7 +50,10 @@ class MainViewModel @Inject constructor(private val appDatabase: AppDatabase) : 
     private fun fetchRecords() {
         viewModelScope.launch {
             val response = appDatabase.recordDao().getTodays()
-            _state.update { it.copy(records = response) }
+            val amounts = response.map { it.amount }
+            _state.update {
+                it.copy(records = response, todaysAmount = if (amounts.isNotEmpty()) amounts.reduce { acc, i -> acc + i } else 0)
+            }
         }
     }
 }

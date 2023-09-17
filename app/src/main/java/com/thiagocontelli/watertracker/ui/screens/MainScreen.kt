@@ -84,7 +84,7 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(64.dp)
             ) {
-                CircularWaterProgress(percentage = 0.9f, number = 2000, radius = 125.dp)
+                CircularWaterProgress(percentage = state.todaysAmount.toFloat() / 2000f, number = 2000, radius = 125.dp)
 
                 Column {
                     Text(
