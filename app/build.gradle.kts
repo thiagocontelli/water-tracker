@@ -70,8 +70,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.47")
-    kapt("com.google.dagger:hilt-android-compiler:2.47")
+    val hiltVersion = "2.47"
+    implementation("com.google.dagger:hilt-android:${hiltVersion}")
+    kapt("com.google.dagger:hilt-android-compiler:${hiltVersion}")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Room
@@ -80,6 +81,14 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+
+    // DataStore
+    val dataStoreVersion = "1.0.0"
+    implementation("androidx.datastore:datastore-preferences:${dataStoreVersion}")
+
+    // Navigation
+    val navigationVersion = "2.7.2"
+    implementation("androidx.navigation:navigation-compose:$navigationVersion")
 }
 
 kapt {
