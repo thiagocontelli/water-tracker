@@ -67,7 +67,7 @@ fun CircularWaterProgress(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_water_drop_24),
+                painter = painterResource(id = R.drawable.water_drop_icon),
                 contentDescription = "Water drop",
                 tint = color,
                 modifier = Modifier.size(32.dp)

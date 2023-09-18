@@ -56,9 +56,9 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
     val bottomSheetState = rememberModalBottomSheetState()
 
     val options = listOf(
-        Option(1, R.drawable.glass_cup, "Glass of water", "Glass", 200),
-        Option(2, R.drawable.bottle, "Bottle of water", "Bottle", 500),
-        Option(3, R.drawable.gallon, "Gallon of water", "Gallon", 1000),
+        Option(1, R.drawable.glass_cup_icon, "Glass of water", "Glass", 200),
+        Option(2, R.drawable.bottle_icon, "Bottle of water", "Bottle", 500),
+        Option(3, R.drawable.gallon_icon, "Gallon of water", "Gallon", 1000),
     )
 
     val dateFormatter = DateTimeFormatter.ofPattern("hh:mm a")
@@ -110,7 +110,7 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.baseline_water_drop_24),
+                                        painter = painterResource(id = R.drawable.water_drop_icon),
                                         contentDescription = "Water drop"
                                     )
 
