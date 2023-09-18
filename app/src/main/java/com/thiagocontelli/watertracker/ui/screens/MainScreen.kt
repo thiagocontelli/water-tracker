@@ -2,6 +2,7 @@ package com.thiagocontelli.watertracker.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -96,37 +98,45 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
                             .fillMaxWidth()
                     )
 
-                    LazyColumn {
-                        items(state.records) { record ->
-                            ElevatedCard(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp)
-                            ) {
-                                Row(
+                    if (state.records.isEmpty()) {
+                        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                            Icon(painter = painterResource(id = R.drawable.no_water_icon), contentDescription = "No water", Modifier.size(64.dp))
+                            Text("Nothing to show here!", style = MaterialTheme.typography.titleMedium)
+                        }
+                    } else {
+                        LazyColumn {
+                            items(state.records) { record ->
+                                ElevatedCard(
                                     Modifier
-                                        .padding(16.dp)
-                                        .fillMaxSize(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp)
                                 ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.water_drop_icon),
-                                        contentDescription = "Water drop"
-                                    )
+                                    Row(
+                                        Modifier
+                                            .padding(16.dp)
+                                            .fillMaxSize(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.water_drop_icon),
+                                            contentDescription = "Water drop"
+                                        )
 
-                                    Text(
-                                        text = "Drank ${getFormattedAmount(record.amount)} of water",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
+                                        Text(
+                                            text = "Drank ${getFormattedAmount(record.amount)} of water",
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
 
-                                    Text(
-                                        text = dateFormatter.format(record.createdAt),
-                                        style = MaterialTheme.typography.labelLarge
-                                    )
+                                        Text(
+                                            text = dateFormatter.format(record.createdAt),
+                                            style = MaterialTheme.typography.labelLarge
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
+
                 }
             }
         }
