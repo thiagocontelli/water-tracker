@@ -27,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +62,10 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
 
     val dateFormatter = DateTimeFormatter.ofPattern("hh:mm a")
 
+    LaunchedEffect(key1 = true) {
+        vm.getDailyGoal()
+    }
+
     Scaffold(topBar = {
         TopAppBar(title = {}, actions = {
             TextButton(onClick = { vm.toggleModal() }) {
@@ -82,7 +87,7 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(64.dp)
             ) {
-                CircularWaterProgress(percentage = state.todaysAmount.toFloat() / 2000f, number = 2000, radius = 125.dp)
+                CircularWaterProgress(percentage = state.todaysAmount.toFloat() / state.dailyGoal.toFloat(), number = state.dailyGoal, radius = 125.dp)
 
                 Column {
                     Text(

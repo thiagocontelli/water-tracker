@@ -1,9 +1,11 @@
 package com.thiagocontelli.watertracker.ui.features.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thiagocontelli.watertracker.data.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -14,13 +16,11 @@ import javax.inject.Inject
 class SplashScreenViewModel @Inject constructor(private val dataStoreManager: DataStoreManager) :
     ViewModel() {
 
-    private var _state = MutableStateFlow(State())
-    val state: StateFlow<State> = _state
-
-    fun getDailyGoal() {
+    fun getDailyGoal(onSuccess: (dailyGoal: Int) -> Unit) {
         viewModelScope.launch {
+            delay(1000)
             dataStoreManager.getDailyGoal().collect { dailyGoal ->
-                _state.update { it.copy(dailyGoal = dailyGoal) }
+                onSuccess(dailyGoal)
             }
         }
     }

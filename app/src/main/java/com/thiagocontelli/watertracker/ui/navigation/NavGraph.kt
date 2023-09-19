@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.thiagocontelli.watertracker.ui.features.main.MainScreen
 import com.thiagocontelli.watertracker.ui.features.splash.SplashScreen
+import com.thiagocontelli.watertracker.ui.features.startup.StartupScreen
 
 @Composable
 fun NavGraph() {
@@ -15,6 +16,6 @@ fun NavGraph() {
     NavHost(navController = navController, startDestination = Screen.Splash.name) {
         composable(Screen.Splash.name) { SplashScreen(navController = navController) }
         composable(Screen.Main.name) { MainScreen() }
-        composable(Screen.Startup.name) { Text(text = "Startup") }
+        composable(Screen.Startup.name) { StartupScreen(navController = navController) }
     }
 }

@@ -7,5 +7,6 @@ data class State(
     val isLoading: Boolean = false,
     val showModal: Boolean = false,
     val records: List<Record> = emptyList(),
-    val todaysAmount: Int = 0
+    val todaysAmount: Int = 0,
+    val dailyGoal: Int = 9999
 )
