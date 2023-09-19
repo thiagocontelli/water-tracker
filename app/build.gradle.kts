@@ -89,6 +89,9 @@ dependencies {
     // Navigation
     val navigationVersion = "2.7.2"
     implementation("androidx.navigation:navigation-compose:$navigationVersion")
+
+    // Lottie
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
 }
 
 kapt {
