@@ -40,7 +40,6 @@ import com.thiagocontelli.watertracker.ui.components.CircularWaterProgress
 import java.time.format.DateTimeFormatter
 
 data class Option(
-    val id: Int,
     val painterResourceId: Int,
     val contentDescription: String,
     val recipient: String,
@@ -55,9 +54,9 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
     val bottomSheetState = rememberModalBottomSheetState()
 
     val options = listOf(
-        Option(1, R.drawable.glass_cup_icon, "Glass of water", "Glass", 200),
-        Option(2, R.drawable.bottle_icon, "Bottle of water", "Bottle", 500),
-        Option(3, R.drawable.gallon_icon, "Gallon of water", "Gallon", 1000),
+        Option(R.drawable.glass_cup_icon, "Glass of water", "Glass", 200),
+        Option(R.drawable.bottle_icon, "Bottle of water", "Bottle", 500),
+        Option(R.drawable.gallon_icon, "Gallon of water", "Gallon", 1000),
     )
 
     val dateFormatter = DateTimeFormatter.ofPattern("hh:mm a")
