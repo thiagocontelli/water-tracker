@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.thiagocontelli.watertracker.ui.screens.MainScreen
-import com.thiagocontelli.watertracker.ui.screens.SplashScreen
+import com.thiagocontelli.watertracker.ui.features.main.MainScreen
+import com.thiagocontelli.watertracker.ui.features.splash.SplashScreen
 
 @Composable
 fun NavGraph() {

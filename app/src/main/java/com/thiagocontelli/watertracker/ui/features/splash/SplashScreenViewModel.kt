@@ -1,4 +1,4 @@
-package com.thiagocontelli.watertracker.ui.viewmodels
+package com.thiagocontelli.watertracker.ui.features.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,10 +13,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(private val dataStoreManager: DataStoreManager) :
     ViewModel() {
-
-    data class State(
-        val dailyGoal: Int = 0
-    )
 
     private var _state = MutableStateFlow(State())
     val state: StateFlow<State> = _state

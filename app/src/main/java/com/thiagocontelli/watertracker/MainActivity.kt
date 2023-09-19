@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.thiagocontelli.watertracker.ui.navigation.NavGraph
-import com.thiagocontelli.watertracker.ui.screens.MainScreen
 import com.thiagocontelli.watertracker.ui.theme.WaterTrackerTheme
 import dagger.hilt.android.AndroidEntryPoint
 

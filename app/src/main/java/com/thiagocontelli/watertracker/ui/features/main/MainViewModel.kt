@@ -1,6 +1,5 @@
-package com.thiagocontelli.watertracker.ui.viewmodels
+package com.thiagocontelli.watertracker.ui.features.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thiagocontelli.watertracker.data.AppDatabase
@@ -11,14 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class State(
-    val selectedAmount: Int = 200,
-    val isLoading: Boolean = false,
-    val showModal: Boolean = false,
-    val records: List<Record> = emptyList(),
-    val todaysAmount: Int = 0
-)
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val appDatabase: AppDatabase) : ViewModel() {

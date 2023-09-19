@@ -1,4 +1,4 @@
-package com.thiagocontelli.watertracker.ui.screens
+package com.thiagocontelli.watertracker.ui.features.splash
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +18,6 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.thiagocontelli.watertracker.R
 import com.thiagocontelli.watertracker.ui.navigation.Screen
-import com.thiagocontelli.watertracker.ui.viewmodels.SplashScreenViewModel
 import kotlinx.coroutines.delay
 
 @Composable
