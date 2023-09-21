@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
@@ -36,8 +37,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.thiagocontelli.watertracker.R
 import com.thiagocontelli.watertracker.ui.components.CircularWaterProgress
+import com.thiagocontelli.watertracker.ui.navigation.Screen
 import java.time.format.DateTimeFormatter
 
 data class Option(
@@ -49,7 +52,7 @@ data class Option(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(vm: MainViewModel = hiltViewModel()) {
+fun MainScreen(navController: NavController, vm: MainViewModel = hiltViewModel()) {
     val state = vm.state.collectAsState().value
 
     val bottomSheetState = rememberModalBottomSheetState()
@@ -64,10 +67,17 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
 
     LaunchedEffect(key1 = true) {
         vm.getDailyGoal()
+        vm.getStreak()
+    }
+
+    LaunchedEffect(key1 = state.showStreakCelebration) {
+        if (state.showStreakCelebration) {
+            navController.navigate(Screen.StreakCelebration.name + "/${state.streak}")
+        }
     }
 
     Scaffold(topBar = {
-        TopAppBar(title = {}, actions = {
+        TopAppBar(title = { Text(text = "💧 ${state.streak}") }, actions = {
             TextButton(onClick = { vm.toggleModal() }) {
                 Text(text = "New register")
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -87,7 +97,10 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(64.dp)
             ) {
-                CircularWaterProgress(percentage = state.todaysAmount.toFloat() / state.dailyGoal.toFloat(), number = state.dailyGoal, radius = 125.dp)
+                CircularWaterProgress(
+                    percentage = if (state.dailyGoal > 0) state.todaysAmount.toFloat() / state.dailyGoal.toFloat() else 0f,
+                    number = state.dailyGoal, radius = 125.dp
+                )
 
                 Column {
                     Text(
@@ -118,10 +131,7 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
                                             .fillMaxSize(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.water_drop_icon),
-                                            contentDescription = "Water drop"
-                                        )
+                                        Text(text = "💧")
 
                                         Text(
                                             text = "Drank ${getFormattedAmount(record.amount)} of water",
@@ -188,6 +198,20 @@ fun MainScreen(vm: MainViewModel = hiltViewModel()) {
             }
         }
     }
+
+//    if (state.showStreakCelebration) {
+//        AlertDialog(
+//            onDismissRequest = { vm.dismissStreakCelebration() },
+//            text = { Text(text = "Parabéns seu porra 👍") },
+//            title = { Text(text = "🥳") },
+//            confirmButton = {},
+//            dismissButton = {
+//                TextButton(onClick = { vm.dismissStreakCelebration() }) {
+//                    Text("Dismiss")
+//                }
+//            }
+//        )
+//    }
 }
 
 fun getFormattedAmount(amount: Int): String {
@@ -196,10 +220,4 @@ fun getFormattedAmount(amount: Int): String {
     }
 
     return "${amount}ml"
-}
-
-@Composable
-@Preview(showSystemUi = true)
-fun MainScreenPreview() {
-    MainScreen()
 }

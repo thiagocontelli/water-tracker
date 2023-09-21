@@ -36,7 +36,7 @@ fun SplashScreen(navController: NavController, vm: SplashScreenViewModel = hiltV
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         LottieAnimation(
-            modifier = Modifier.size(350.dp),
+            modifier = Modifier.size(275.dp),
             composition = composition,
             iterations = LottieConstants.IterateForever
         )

@@ -8,5 +8,7 @@ data class State(
     val showModal: Boolean = false,
     val records: List<Record> = emptyList(),
     val todaysAmount: Int = 0,
-    val dailyGoal: Int = 9999
+    val dailyGoal: Int = 9999,
+    val streak: Int = 0,
+    val showStreakCelebration: Boolean = false
 )

@@ -66,13 +66,9 @@ fun CircularWaterProgress(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.water_drop_icon),
-                contentDescription = "Water drop",
-                tint = color,
-                modifier = Modifier.size(32.dp)
-            )
-
+            
+            Text(text = "💧", style = MaterialTheme.typography.headlineLarge)
+            
             Column {
                 Text(
                     text = (currentPercentage.value * number).toInt().toString() + "ml",

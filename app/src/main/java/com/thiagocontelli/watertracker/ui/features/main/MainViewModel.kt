@@ -33,6 +33,13 @@ class MainViewModel @Inject constructor(private val appDatabase: AppDatabase, pr
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             appDatabase.recordDao().insert(Record(amount = state.value.selectedAmount))
+            if (state.value.todaysAmount + state.value.selectedAmount >= state.value.dailyGoal) {
+                val x = dataStoreManager.increaseStreak()
+                getStreak()
+                if (x) {
+                    _state.update { it.copy(showStreakCelebration = true) }
+                }
+            }
             fetchRecords()
         }
         _state.update { it.copy(isLoading = false) }
@@ -44,15 +51,29 @@ class MainViewModel @Inject constructor(private val appDatabase: AppDatabase, pr
             val response = appDatabase.recordDao().getTodays()
             val amounts = response.map { it.amount }
             _state.update {
-                it.copy(records = response, todaysAmount = if (amounts.isNotEmpty()) amounts.reduce { acc, i -> acc + i } else 0)
+                it.copy(
+                    records = response,
+                    todaysAmount = if (amounts.isNotEmpty()) amounts.reduce { acc, i -> acc + i } else 0)
             }
         }
+    }
+
+    fun dismissStreakCelebration() {
+        _state.update { it.copy(showStreakCelebration = false) }
     }
 
     fun getDailyGoal() {
         viewModelScope.launch {
             dataStoreManager.getDailyGoal().collect { dailyGoal ->
                 _state.update { it.copy(dailyGoal = dailyGoal) }
+            }
+        }
+    }
+
+    fun getStreak() {
+        viewModelScope.launch {
+            dataStoreManager.getStreak().collect { streak ->
+                _state.update { it.copy(streak = streak) }
             }
         }
     }
